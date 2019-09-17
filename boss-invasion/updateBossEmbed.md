@@ -14,8 +14,9 @@ UpdateBossEmbed
 {{ $retId := dbGet $myUserId  $dbkey }}
 
 {{ $bossName := "A wild boss has invited themselves in our Base! Who could it be?" }}
-{{ if (dbGet $myUserId "Name_BossFight") }}
- {{ $bossName := .Value }}
+{{ $dbName := dbGet $myUserId "Name_BossFight" }}
+ {{ if $dbName}}
+ {{ $bossName = $dbName.Value }}
 {{ end }}
 
 
