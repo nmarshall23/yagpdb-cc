@@ -11,10 +11,11 @@ trig
 ## Response:
 
 ```
-{{/* */}}
-{ const := (sdict
+{{/*__SET__ __Const__*/}}
+{{ $const := (sdict
     "dbPrefix" "test"
-    "actionMsgkey" "test--actionMsgId"
+    "actionMsgKey" "test--actionMsgId"
+    "channel" "test-channel"
     "emoji" (cslice "" "" "")
     "userValueDbPrefix" "test--user|"
     "userPattern" "test--user|%"
@@ -25,22 +26,43 @@ trig
   )
 }}
 
-{{/*_______*/}}
+{{/*__Del__ __Old__ __Values__*/}}
 
-{{ $myUserId := (toInt64 0) }}
-{{ $dbkey := "BossFight--voteMsgId" }}
+{{ $oldretId := dbGet (toInt64 0) $const.actionMsgKey }}
+{{ if $oldretId }}
+   {{ deleteMessage $const.channel $oldretId.Value 1 }}
+{{ end }}
+
+{{ range (dbGetPattern (toInt64 0) (joinStr "" $const.dbPrefix) 10 0) }}
+  {{ dbDel .UserID .Key }}
+{{ end }}
+
+{{ range (dbTopEntries $const.userPattern 60 0) }}
+  {{ dbDel .UserID .Key }}
+{{ end }}
+
+
+
+{{/*__New__ __Msg__*/}}
 
 {{$embed := cembed
-"title" "__Boss Invasion__"
+"title" "__Stand by__ *Reseting*"
 }}
 
-{{ $retId := sendMessageRetID nil $embed }}
+{{ $msgId := sendMessageRetID nil $embed }}
 
-{{ addMessageReactions nil $retId "🕕" "🕖" "🕗" "🕘" }}
+{{range $k, $v := $const.emoji }}
+  {{ addMessageReactions nil $msgId $v }}
+{{end}}
 
-{{ dbSet (toInt64 0) $const.actionMsgkey (toString $retId) }}
+{{ dbSet (toInt64 0) $const.actionMsgKey (toString $retId) }}
 
-{{ deleteTrigger 20 }}
+
+{{ if .Message.ID }}
+  {{ deleteTrigger 3 }}
+{{ end }}
+
+{{ execCC $const.cc.update $const.channel 3 nil }}
 ```
 
 ## Aditional Notes:
