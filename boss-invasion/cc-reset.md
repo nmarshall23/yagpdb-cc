@@ -12,31 +12,20 @@ trig
 
 ```
 {{/*__SET__ __Const__*/}}
-{{ $const := (sdict
-    "dbPrefix" "test"
-    "actionMsgKey" "test--actionMsgId"
-    "channel" "test-channel"
-    "emoji" (cslice "" "" "")
-    "userValueDbPrefix" "test--user|"
-    "userPattern" "test--user|%"
-    "cc" (sdict
-      "update" 0
-      "reset" 0
-    )
-  )
-}}
+{{/* Insert const here! */}}
+
 
 {{/*__Del__ __Old__ __Values__*/}}
 {{with $const }}
-  {{with $db := (dbGet (toInt64 0) .actionMsgKey) }}
-   {{ deleteMessage .channel $db.Value 1 }}
+  {{with $msgId := (dbGet (toInt64 0) .key.voteMsgId) }}
+   {{ deleteMessage .channel $msgId.Value 0 }}
   {{end}}
 
-  {{ range (dbGetPattern (toInt64 0) (joinStr "" .dbPrefix) 10 0) }}
+  {{ range (dbGetPattern (toInt64 0) (joinStr "" .dbPrefix "%") 10 0) }}
     {{ dbDel .UserID .Key }}
   {{ end }}
 
-  {{ range (dbTopEntries .userPattern 60 0) }}
+  {{ range (dbTopEntries (joinStr "" .key.userVotePrefix "%") 60 0) }}
     {{ dbDel .UserID .Key }}
   {{ end }}
 {{end}}
@@ -51,7 +40,7 @@ trig
     {{ addMessageReactions nil $msgId $v }}
   {{end}}
 
-  {{dbSet (toInt64 0) .actionMsgKey (toString $retId) }}
+  {{dbSet (toInt64 0) .key.voteMsgId (toString $msgId) }}
 
 
   {{if .Message.ID }}

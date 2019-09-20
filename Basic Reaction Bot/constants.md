@@ -3,12 +3,11 @@
 ```
 {{ $const := (sdict
     "dbPrefix" "test"
-    "actionMsgKey" "test--actionMsgId"
     "channel" "test-channel"
     "emoji" (cslice "" "" "")
-    "userValueDbPrefix" "test--user|"
-    "userPattern" "test--user|%"
     "keys" (sdict
+      "voteMsgId" "test--actionMsgId"
+      "userVotePrefix" "test--user|"
       "ex1" "test--kEx1"
     )
     "cc" (sdict
