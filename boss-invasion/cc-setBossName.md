@@ -4,14 +4,13 @@
 }}
 
 {{/*__SET__ __Const__*/}}
-{{/* Insert const here! */}}
+<<Insert const here! $d />>
 
 
-{{with $const}}
-  {{ $name := $args.Get 0}}
-  {{ dbSet (toInt64 0) .key.bossName $name }}
+{{ $name := $args.Get 0}}
+{{ dbSet (toInt64 0) $d.keys.bossName $name }}
 
-  {{ execCC .cc.update .channel 1 (sdict ) }}
+{{ execCC $d.cc.update $d.channel 1 (sdict ) }}
   {{ deleteTrigger 3 }}
 {{end}}
 ```
