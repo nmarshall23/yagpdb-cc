@@ -12,24 +12,15 @@ trig
 
 ```
 {{/*__SET__ __Const__*/}}
-{{ $const := (sdict
-    "dbPrefix" "test"
-    "actionMsgKey" "test--actionMsgId"
-    "channel" "test-channel"
-    "emoji" (cslice "" "" "")
-    "userValueDbPrefix" "test--user|R"
-    "userPattern" "test--user|%"
-    "cc" (sdict
-      "update" 0
-      "reset" 0
-    )
-  )
-}}
+<<Insert const here! $d />>
+
+{{/**** LOCAL BOT SETTING */}}
+{{/********/}}
 
 {{/*__Filter Out Bot__*/}}
 
 {{if not (eq .Reaction.UserID .ReactionMessage.Author.ID) }}
-  {{ $dbkey := (joinStr "" $const.userValueDbPrefix .Reaction.Emoji.Name) }}
+  {{ $dbkey := (joinStr "" $d.keys.userVotePrefix .Reaction.Emoji.Name) }}
 
   {{/*__Add or Remove__*/}}
 
@@ -43,7 +34,7 @@ trig
     {{ dbDel .Reaction.UserID $dbkey }}
   {{end}}
 
-  {{ scheduleUniqueCC $const.cc.update nil 1 0 (sdict ) }}
+  {{ scheduleUniqueCC $d.cc.update nil 1 0 (sdict ) }}
 {{end}}
 ```
 

@@ -7,7 +7,7 @@
     "emoji" (cslice "" "" "")
     "keys" (sdict
       "voteMsgId" "test--actionMsgId"
-      "userVotePrefix" "test--user|"
+      "userVotePrefix" "test--user|T"
       "ex1" "test--kEx1"
     )
     "cc" (sdict

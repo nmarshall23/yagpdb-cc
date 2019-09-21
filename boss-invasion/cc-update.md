@@ -12,14 +12,15 @@ trig
 
 ````
 {{/*__SET__ __Const__*/}}
-{{/* Insert const here! */}}
+<<Insert const here! $d />>
+
+{{/********/}}
 
 {{/*__Retrieve Values__*/}}
+
 {{ $description := "A wild boss has invited themselves in our Base! Who could it be?" }}
-{{with $const }}
-  {{ with $dbValue := dbGet (toInt64 0) .key.bossName }}
-    {{ $description = $dbValue.Value }}
-  {{ end }}
+{{ with $dbValue := dbGet (toInt64 0) $d.keys.bossName }}
+  {{ $description = $dbValue.Value }}
 {{ end }}
 
 
@@ -27,26 +28,22 @@ trig
 
 {{$LookingForCoop := sdict }}
 
-{{with $const }}
-  {{ $dbEntries := sdict
-    "T🕕" " "
-    "T🕖" " "
-    "T🕗" " "
-    "T🕘" " "
-  }}
-  {{ range (dbTopEntries (joinStr "" .key.userVotePrefix "%") 60 0) }}
-    {{ $pattern := (split .Key "|") }}
-    {{ $n := (joinStr ", " (index $pattern 1)) }}
-    {{ $v := $dbEntries.Get $n }}
-    {{$dbEntries.Set $n (joinStr " " $v .Value) }}
-  {{ end }}
+{{ $dbEntries := sdict
+  "T🕕" " "
+  "T🕖" " "
+  "T🕗" " "
+  "T🕘" " "
+}}
+{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
+  {{ $pattern := (split .Key "|") }}
+  {{ $key := (joinStr ", " (index $pattern 1)) }}
+  {{ $v := $dbEntries.Get $key }}
+  {{$dbEntries.Set $key (joinStr " " $v .Value) }}
+{{ end }}
 
-  {{$defaultKeys := cslice "T🕕" "T🕖"  "T🕗" "T🕘" }}
-  {{ range $k, $v := $defaultKeys }}
-    {{ $group := ($dbEntries.Get $v) }}
-    {{ $LookingForCoop.Set $v (joinStr "" "```" $group "```") }}
-  {{ end }}
-{{end}}
+{{ range $k, $v := $dbEntries }}
+  {{ $LookingForCoop.Set $k (joinStr "" "```" $v "```") }}
+{{ end }}
 
 
 {{ $fields := cslice
@@ -58,18 +55,16 @@ trig
 
 {{/*__Create Embed Msg__*/}}
 
-{{with $const }}
-  {{ $embed := cembed
+{{ $embed := cembed
   "title"  "Boss Invasion"
   "description" $description
   "color" 4645612
   "fields" $fields
   "footer" (sdict "text" "Voting will send you a reminder. \nThere is a 1 sec delay before a vote registers.")
-  }}
+}}
 
-  {{ $retId := dbGet (toInt64 0) .key.voteMsgId }}
-  {{ editMessage nil $retId.Value $embed }}
-{{end}}
+{{ $retId := dbGet (toInt64 0) $d.keys.voteMsgId }}
+{{ editMessage nil $retId.Value $embed }}
 ````
 
 ## Additional Notes:

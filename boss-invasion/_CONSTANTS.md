@@ -13,6 +13,7 @@
     "cc" (sdict
       "update" 0
       "reset" 0
+      "sendReminder" 24
     )
   )
 }}
