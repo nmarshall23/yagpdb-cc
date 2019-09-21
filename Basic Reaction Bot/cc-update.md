@@ -19,7 +19,7 @@ trig
 {{/*__Retrieve Values__*/}}
 
 {{ $description := "A wild boss has invited themselves in our Base! Who could it be?" }}
-{{ with $dbValue := dbGet (toInt64 0) $d.key.bossName }}
+{{ with $dbValue := dbGet (toInt64 0) $d.keys.bossName }}
   {{ $description = $dbValue.Value }}
 {{ end }}
 
@@ -34,7 +34,7 @@ trig
   "T🕗" " "
   "T🕘" " "
 }}
-{{ range (dbTopEntries (joinStr "" $d.key.userVotePrefix "%") 60 0) }}
+{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
   {{ $pattern := (split .Key "|") }}
   {{ $key := (joinStr ", " (index $pattern 1)) }}
   {{ $v := $dbEntries.Get $key }}

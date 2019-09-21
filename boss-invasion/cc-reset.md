@@ -12,43 +12,39 @@ trig
 
 ```
 {{/*__SET__ __Const__*/}}
-{{/* Insert const here! */}}
+<<Insert const here! $d />>
 
+{{/********/}}
 
 {{/*__Del__ __Old__ __Values__*/}}
-{{with $const }}
-  {{with $msgId := (dbGet (toInt64 0) .key.voteMsgId) }}
-   {{ deleteMessage .channel $msgId.Value 0 }}
-  {{end}}
-
-  {{ range (dbGetPattern (toInt64 0) (joinStr "" .dbPrefix "%") 10 0) }}
-    {{ dbDel .UserID .Key }}
-  {{ end }}
-
-  {{ range (dbTopEntries (joinStr "" .key.userVotePrefix "%") 60 0) }}
-    {{ dbDel .UserID .Key }}
-  {{ end }}
+{{with $db := (dbGet (toInt64 0) $d.keys.voteMsgId) }}
+  {{ deleteMessage $d.channel $db.Value 1 }}
 {{end}}
+
+{{ range (dbGetPattern (toInt64 0) (joinStr "" $d.dbPrefix) 10 0) }}
+  {{ dbDel .UserID .Key }}
+{{ end }}
+
+{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
+  {{ dbDel .UserID .Key }}
+{{ end }}
 
 {{/*__New__ __Msg__*/}}
-{{with $const }}
-  {{ $embed := cembed "title" "__Stand by__ *Reseting*" }}
+{{ $embed := cembed "title" "__Stand by__ *Reseting*" }}
+{{ $msgId := sendMessageRetID nil $embed }}
 
-  {{ $msgId := sendMessageRetID nil $embed }}
-
-  {{range $k, $v := .emoji }}
-    {{ addMessageReactions nil $msgId $v }}
-  {{end}}
-
-  {{dbSet (toInt64 0) .key.voteMsgId (toString $msgId) }}
-
-
-  {{if .Message.ID }}
-    {{ deleteTrigger 3 }}
-  {{end}}
-
-  {{ execCC .cc.update .channel 3 nil }}
+{{range $k, $v := $d.emoji }}
+  {{ addMessageReactions nil $msgId $v }}
 {{end}}
+
+{{dbSet (toInt64 0) $d.keys.voteMsgId (toString $msgId) }}
+
+
+{{if .Message.ID }}
+  {{ deleteTrigger 3 }}
+{{end}}
+
+{{ execCC $d.cc.update $d.channel 1 (sdict )}}
 ```
 
 ## Aditional Notes:

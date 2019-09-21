@@ -12,32 +12,43 @@ trig
 
 ```
 {{/*__SET__ __Const__*/}}
-{{/* Insert const here! */}}
+<<Insert const here! $d />>
+
+{{/**** LOCAL BOT SETTING */}}
+
+{{ $role := mentionRoleID $d.role.org }}
+{{ $local := sdict
+  "userMessage" "It's time to gather and attack!"
+  "userKeysHour" (sdict
+    "T🕕" 17
+    "T🕖" 18
+    "T🕗" 19
+    "T🕘" 20
+  )
+  "organizerReminder" (joinStr " " "A reminder" $role "did you happen to see what level tonight's Boss is?")
+}}
+
+{{/********/}}
 
 {{ $time := currentTime.Add ( toDuration ( mult -5 .TimeHour ) )  }}
 {{ $CurrHour := $time.Hour }}
 
-{{with $const}}
-  {{ $data := sdict "msg" "It's time to gather and attack!" }}
 
-  {{if eq $CurrHour 1 }}
-    {{ execCC .cc.reset nil 0 (sdict ) }}
-  {{else if eq $CurrHour 16 }}
-    {{ $role := mentionRoleID .role.org }}
-    {{ sendMessageNoEscape nil (joinStr " " "A reminder" $role "did you happen to see what level tonight's Boss is?") }}
-  {{end}}
+{{if eq $CurrHour 1 }}
+  {{ execCC $d.cc.reset nil 0 (sdict ) }}
+{{else if eq $CurrHour 16 }}
+  {{ sendMessageNoEscape nil $local.organizerReminder}}
+{{end}}
 
-  {{range $k, $v := (sdict
-      "🕕" 17
-      "🕖" 18
-      "🕗" 19
-      "🕘" 20
-    ) }}
-    {{if eq $CurrHour $v }}
-      {{ $minsDelay :=  (add 60 (mult -1 currentTime.Minute)) }}
-      {{ $data.Set "pattern" (joinStr "" .key.userVotePrefix "T" $k) }}
-      {{ execCC .cc.sendReminder nil $minsDelay $data }}
-    {{end}}
+{{range $k, $v := $local.userKeysHour }}
+  {{if eq $CurrHour $v }}
+    {{ $data := sdict
+      "msg" $local.userMessage
+      "pattern" (joinStr "" $d.keys.userVotePrefix $k)
+    }}
+    {{ $minsDelay :=  (add 60 (mult -1 currentTime.Minute)) }}
+
+    {{ execCC $d.cc.sendReminder nil $minsDelay $data }}
   {{end}}
 {{end}}
 ```

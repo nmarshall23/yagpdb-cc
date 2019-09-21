@@ -12,12 +12,15 @@ trig
 
 ```
 {{/*__SET__ __Const__*/}}
-{{/* Insert const here! */}}
+<<Insert const here! $d />>
+
+{{/**** LOCAL BOT SETTING */}}
+{{/********/}}
 
 {{/*__Filter Out Bot__*/}}
 
 {{if not (eq .Reaction.UserID .ReactionMessage.Author.ID) }}
-  {{ $dbKey := (joinStr "" $const.key.userVotePrefix "T" .Reaction.Emoji.Name) }}
+  {{ $dbkey := (joinStr "" $d.keys.userVotePrefix .Reaction.Emoji.Name) }}
 
   {{/*__Add or Remove__*/}}
 
@@ -26,12 +29,12 @@ trig
     {{/*__Set Data__*/}}
 
     {{ $data := (userArg  .Reaction.UserID).Username }}
-    {{ dbSet .Reaction.UserID $dbKey $data }}
+    {{ dbSet .Reaction.UserID $dbkey $data }}
   {{else}}
-    {{ dbDel .Reaction.UserID $dbKey }}
+    {{ dbDel .Reaction.UserID $dbkey }}
   {{end}}
 
-  {{ scheduleUniqueCC $const.cc.update nil 1 11 (sdict ) }}
+  {{ scheduleUniqueCC $d.cc.update nil 1 0 (sdict ) }}
 {{end}}
 ```
 
