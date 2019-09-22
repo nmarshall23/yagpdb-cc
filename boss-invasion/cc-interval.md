@@ -46,9 +46,10 @@ trig
       "msg" $local.userMessage
       "pattern" (joinStr "" $d.keys.userVotePrefix $k)
     }}
-    {{ $minsDelay :=  (add 60 (mult -1 currentTime.Minute)) }}
+    {{ $minsDelay :=  (add 60 (mult -1 $time.Minute)) }}
+    {{ $delay := (mult 60 $minsDelay) }}
 
-    {{ execCC $d.cc.sendReminder nil $minsDelay $data }}
+    {{ execCC $d.cc.sendReminder nil $delay $data }}
   {{end}}
 {{end}}
 ```

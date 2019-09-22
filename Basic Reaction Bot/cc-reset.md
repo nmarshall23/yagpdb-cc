@@ -25,10 +25,6 @@ trig
   {{ dbDel .UserID .Key }}
 {{ end }}
 
-{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
-  {{ dbDel .UserID .Key }}
-{{ end }}
-
 {{/*__New__ __Msg__*/}}
 {{ $embed := cembed "title" "__Stand by__ *Reseting*" }}
 {{ $msgId := sendMessageRetID nil $embed }}

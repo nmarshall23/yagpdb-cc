@@ -11,6 +11,5 @@
 {{ dbSet (toInt64 0) $d.keys.bossName $name }}
 
 {{ execCC $d.cc.update $d.channel 1 (sdict ) }}
-  {{ deleteTrigger 3 }}
-{{end}}
+{{ deleteTrigger 3 }}
 ```

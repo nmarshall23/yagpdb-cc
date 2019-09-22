@@ -21,20 +21,20 @@ trig
   {{ deleteMessage $d.channel $db.Value 1 }}
 {{end}}
 
-{{ range (dbGetPattern (toInt64 0) (joinStr "" $d.dbPrefix) 10 0) }}
+{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
   {{ dbDel .UserID .Key }}
 {{ end }}
 
-{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
+{{ range (dbGetPattern (toInt64 0) (joinStr "" $d.dbPrefix) 10 0) }}
   {{ dbDel .UserID .Key }}
 {{ end }}
 
 {{/*__New__ __Msg__*/}}
 {{ $embed := cembed "title" "__Stand by__ *Reseting*" }}
-{{ $msgId := sendMessageRetID nil $embed }}
+{{ $msgId := sendMessageRetID $d.channel $embed }}
 
 {{range $k, $v := $d.emoji }}
-  {{ addMessageReactions nil $msgId $v }}
+  {{ addMessageReactions $d.channel $msgId $v }}
 {{end}}
 
 {{dbSet (toInt64 0) $d.keys.voteMsgId (toString $msgId) }}
@@ -44,7 +44,7 @@ trig
   {{ deleteTrigger 3 }}
 {{end}}
 
-{{ execCC $d.cc.update $d.channel 1 (sdict )}}
+{{ execCC $d.cc.update $d.channel 4 (sdict )}}
 ```
 
 ## Aditional Notes:

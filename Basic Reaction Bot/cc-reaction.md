@@ -27,9 +27,14 @@ trig
   {{if .ReactionAdded }}
 
     {{/*__Set Data__*/}}
+    {{ $time := currentTime.Add ( toDuration ( mult -5 .TimeHour ) )  }}
+    {{ $minsDelay :=  (add 60 (mult -1 currentTime.Minute)) }}
+    {{ $HoursDelay :=  (add 23 (mult -1 currentTime.Hour)) }}
+
+    {{ $delay := (mult 60 $minsDelay (mult 60 $HoursDelay)) }}
 
     {{ $data := (userArg  .Reaction.UserID).Username }}
-    {{ dbSet .Reaction.UserID $dbkey $data }}
+    {{ dbSetExpire .Reaction.UserID $dbkey $data $delay }}}
   {{else}}
     {{ dbDel .Reaction.UserID $dbkey }}
   {{end}}
