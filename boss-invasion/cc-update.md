@@ -29,21 +29,25 @@ trig
 {{$LookingForCoop := sdict }}
 
 {{ $dbEntries := sdict
-  "T🕕" " "
-  "T🕖" " "
-  "T🕗" " "
-  "T🕘" " "
+  "T🕕" ""
+  "T🕖" ""
+  "T🕗" ""
+  "T🕘" ""
 }}
 {{ $dbUserEntries := }}
 {{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
   {{ $pattern := (split .Key "|") }}
-  {{ $key := (joinStr ", " (index $pattern 1)) }}
+  {{ $key := index $pattern 1 }}
   {{ $v := $dbEntries.Get $key }}
-  {{$dbEntries.Set $key (joinStr " " $v .Value) }}
+  {{$dbEntries.Set $key (joinStr ", " $v .Value) }}
 {{ end }}
 
 {{ range $k, $v := $dbEntries }}
-  {{ $LookingForCoop.Set $k (joinStr "" "```" $v "```") }}
+  {{ if $v }}
+    {{ $LookingForCoop.Set $k (joinStr "" "```" $v "```") }}
+  {{ else }}
+    {{ $LookingForCoop.Set $k (joinStr "" "```   ```") }}
+  {{ end }}
 {{ end }}
 
 
