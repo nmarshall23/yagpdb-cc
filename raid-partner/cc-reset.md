@@ -25,12 +25,23 @@ trig
   {{ dbDel .UserID .Key }}
 {{ end }}
 
+{{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
+  {{ $pattern := (split .Key "|") }}
+  {{ $name := index $pattern 1 }}
+  {{ takeRoleID .UserID ($d.role.Get (joinStr "" "seeking" $name)) }}
+  {{ dbDel .UserID .Key }}
+{{ end }}
+
+
+
+
 {{/*__New__ __Msg__*/}}
 {{ $embed := cembed "title" "__Stand by__ *Reseting*" }}
-{{ $msgId := sendMessageRetID $d.channel $embed }}
+{{ $msgId := sendMessageRetID nil $embed }}
 
 {{range $k, $v := $d.emoji }}
-  {{ addMessageReactions $d.channel $msgId $v }}
+  {{ sleep 1 }}
+  {{ addMessageReactions nil $msgId $v }}
 {{end}}
 
 {{dbSet (toInt64 0) $d.keys.voteMsgId (toString $msgId) }}
@@ -40,7 +51,7 @@ trig
   {{ deleteTrigger 3 }}
 {{end}}
 
-{{ execCC $d.cc.update $d.channel 4 (sdict )}}
+{{ execCC $d.cc.update $d.channel 1 (sdict )}}
 ```
 
 ## Aditional Notes:

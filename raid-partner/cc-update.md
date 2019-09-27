@@ -52,11 +52,18 @@ trig
   (sdict "name" "<:GlowingJade:622628038869254144> Seeking Orange Jade" "value" ($LookingForCoop.Get "GlowingJade") "inline" false)
 }}
 
+{{ $description := joinStr " "
+"Vote for the **Resource** that you are look for. You will be assigned a temporary __Seeking__ Role."
+"Ping members with that role to see if anyone is free to Raid with you."
+"\n "
+"\n> Votes are reset at 1am on: __Monday__, and __Thursday__"
+}}
+
 {{/*__Create Embed Msg__*/}}
 
 {{ $embed := cembed
   "title"  "Raid Partner Signup"
-  "description" "Select the Item you are looking for. Votes expire in 24 Hours."
+  "description" $description
   "color" 4645612
   "fields" $fields
   "footer" (sdict "text" "\nThere is a 1 sec delay before a vote registers.")

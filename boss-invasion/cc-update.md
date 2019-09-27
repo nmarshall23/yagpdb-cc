@@ -34,7 +34,6 @@ trig
   "T🕗" ""
   "T🕘" ""
 }}
-{{ $dbUserEntries := }}
 {{ range (dbTopEntries (joinStr "" $d.keys.userVotePrefix "%") 60 0) }}
   {{ $pattern := (split .Key "|") }}
   {{ $key := index $pattern 1 }}

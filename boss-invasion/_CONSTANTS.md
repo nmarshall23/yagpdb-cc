@@ -3,7 +3,7 @@
 ```
 {{ $d := (sdict
     "dbPrefix" "bossInv"
-    "channel" "boss-invasion-signup"
+    "channel" "reminders-signup"
     "emoji" (cslice "🕕" "🕖" "🕗" "🕘")
     "keys" (sdict
       "voteMsgId" "bossInv--voteMsgId"
@@ -11,12 +11,12 @@
       "bossName" "bossInv--name"
     )
     "cc" (sdict
-      "update" 37
-      "reset" 36
-      "sendReminder" 24
+      "update" 1
+      "reset" 2
+      "sendReminder" 3
     )
     "role" (sdict
-      "org" 622604425076277249
+      "org" 626963911727513601
     )
   )
 }}
